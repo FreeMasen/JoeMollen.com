@@ -1,0 +1,12 @@
+[package]
+name = "jm"
+version = "0.1.0"
+authors = ["rmasen"]
+
+[dependencies]
+hyper = "0.11"
+futures = "0.1"
+pony = "0.1"
+tera = "*"
+serde = "*"
+serde_derive = "*"

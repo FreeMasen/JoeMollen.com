@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    {% for project in projects %}
+        <a href="/page?name={{project.name}}">
+            <img src="{{project.name}}/img/{{project.images[0]}}" alt="{{project.name}}" />
+        </a>
+    {% endfor %}
+</div>
+{% endblock content %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper">
+    <article>
+        <h1>{{project.name}}</h1>
+    </article>
+    <aside>
+        {% for img in project.images %}
+            <img src="{{project.name}}/img/{{img}}" alt="{{img.name}}" />
+        {% endfor %}
+    </aside>
+</div>
+{% endblock content %}

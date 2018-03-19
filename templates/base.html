@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <base href="/" />
+        {% block head %}
+
+        {% endblock head %}
+        <style></style>
+    </head>
+    <body>
+        <header id="header">
+            <svg>
+                <text>
+                    Joe Mollen
+                </text>
+            </svg>
+        </header>
+        <nav id="nav">
+            <a class="nav button" href="/">
+                Portfolio
+            </a>
+            <a class="nav button" href="/about">
+                About
+            </a>
+            <a class="nav button" href="/contact">
+                Contact
+            </a>
+        </nav>
+        <main id="main">
+            {% block content %}
+            {% endblock content %}
+        </main>
+    </body>
+</html>
