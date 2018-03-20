@@ -31,9 +31,9 @@
 </style>
 {% endblock head %}
 {% block content %}
-    {% for project in projects %}
-        <a href="/page?name={{project.name}}" class="project-link">
-                <img src="{{project.name}}/img/{{project.images | first}}" alt="{{project.name}}" class="project-image" />
+    {% for page in pages %}
+        <a href="/page?name={{page.project.name}}" class="project-link">
+                <img src="{{page.project.name}}/img/{{page.project.images | first}}" alt="{{page.meta.title}}" class="project-image" />
         </a>
     {% endfor %}
 {% endblock content %}

@@ -2,11 +2,12 @@
 {% block content %}
 <div class="page-wrapper">
     <article>
-        <h1>{{project.name}}</h1>
+        <h1>{{page.meta.title}}</h1>
+        {{ page.content | safe }}
     </article>
     <aside>
-        {% for img in project.images %}
-            <img src="{{project.name}}/img/{{img}}" alt="{{img.name}}" />
+        {% for img in page.project.images %}
+            <img src="{{page.project.name}}/img/{{img}}" alt="{{img}}" />
         {% endfor %}
     </aside>
 </div>

@@ -4,16 +4,16 @@ use hyper::{StatusCode, Error};
 use hyper::header::ContentLength;
 use tera;
 use futures::future::Future;
-use page::{get_all_projects, get_project};
+use page::{get_all_pages, get_page};
 
 pub fn index(_req: Request) -> Box<Future<Item = Response, Error = Error>> {
-    let projects = if let Ok(proj) = get_all_projects() {
-        proj
+    let pages = if let Some(p) = get_all_pages() {
+        p
     } else {
         return bad_params()
     };
     let mut ctx = tera::Context::new();
-    ctx.add("projects", &projects);
+    ctx.add("pages", &pages);
     match get_templates().render("index.html", &ctx) {
         Ok(body) => {
             Box::new(
@@ -93,7 +93,7 @@ pub fn page(req: Request) -> Box<Future<Item = Response, Error = Error>> {
             if parts.len() > 2 || parts[0] != "name" {
                 return bad_params()
             };
-            let project = if let Ok(p) = get_project(parts[1]) {
+            let project = if let Some(p) = get_page(parts[1]) {
                 p
             } else {
                 return bad_params()

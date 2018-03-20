@@ -6,6 +6,8 @@ extern crate pony;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+extern crate toml;
+extern crate markdown;
 
 
 use hyper::server::{NewService, Http};
