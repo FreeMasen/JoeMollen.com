@@ -7,7 +7,7 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate toml;
-extern crate markdown;
+extern crate percent_encoding;
 
 
 use hyper::server::{NewService, Http};
@@ -20,6 +20,7 @@ fn main() {
     pb.get("/", routes::index);
     pb.get("/page", routes::page);
     pb.use_static("portfolio/");
+    pb.use_static_logging();
     let addr = "127.0.0.1:1111".parse().unwrap();
     let handler = Http::new().bind(&addr, move || pb.new_service()).unwrap();
     let _ = handler.run();

@@ -85,22 +85,33 @@ fn get_templates() -> tera::Tera {
 //     }
 
 // }
-
+use percent_encoding::percent_decode;
 pub fn page(req: Request) -> Box<Future<Item = Response, Error = Error>> {
     match req.uri().query() {
         Some(q) => {
-            let parts: Vec<&str> = q.split("=").collect();
+            println!("q: {:?}", q);
+            let parsed = match percent_decode(q.as_bytes()).decode_utf8() {
+                Ok(p) => p.into_owned(),
+                Err(_e) => String::new()
+            };
+            let parts: Vec<&str> = parsed.split("=").collect();
+            println!("parts: {:?}", parts);
             if parts.len() > 2 || parts[0] != "name" {
                 return bad_params()
             };
-            let project = if let Some(p) = get_page(parts[1]) {
+            let page = if let Some(p) = get_page(parts[1]) {
                 p
             } else {
                 return bad_params()
             };
+            println!("page: {:?}", page);
             let mut ctx = tera::Context::new();
-            ctx.add("project", &project);
-            let body = get_templates().render("index.html", &ctx).unwrap();
+            ctx.add("page", &page);
+            let body = if let Ok(b) = get_templates().render("page.html", &ctx) {
+                b
+            } else {
+                return bad_params()
+            };
             Box::new(
                 ok(
                     Response::new()
