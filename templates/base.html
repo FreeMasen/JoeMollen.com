@@ -1,27 +1,63 @@
 <html>
     <head>
         <base href="/" />
+        <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet"> 
         {% block head %}
-
         {% endblock head %}
-        <style></style>
+        <style>
+        html, body {
+            border: 0;
+            padding: 0;
+            margin: 0;
+        }
+        html > * {
+            box-sizing: border-box;
+            font-family: 'IBM Plex Sans Condensed', sans-serif !important;
+        }
+        #header {
+            margin-bottom: 10px;
+        }
+        #header > svg {
+            fill: gray;
+        }
+        #nav {
+            display: flex;
+            flex-flow: row;
+            justify-content: center;
+            align-items: center;
+            align-content: flex-start;
+            margin-bottom: 10px;
+        }
+        #nav > .button {
+            display: block;
+            padding: 5px 10px;
+            text-decoration: none;
+            color: black;
+            background: lightgrey;
+            font-size: 14pt;
+
+        }
+        #nav > .button:hover {
+            background: aqua;
+        }
+        </style>
     </head>
     <body>
         <header id="header">
-            <svg>
-                <text>
+            <svg viewBox="0 0 100 13">
+                <text x="0" y="12" lengthAdjust="spacingAndGlyphs" text-anchor="start" textLength="100">
                     Joe Mollen
                 </text>
             </svg>
         </header>
         <nav id="nav">
-            <a class="nav button" href="/">
+            <a class="button" href="/">
                 Portfolio
             </a>
-            <a class="nav button" href="/about">
+            <a class="button" href="/about">
                 About
             </a>
-            <a class="nav button" href="/contact">
+            <a class="button" href="/contact">
                 Contact
             </a>
         </nav>

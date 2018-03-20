@@ -1,14 +1,6 @@
 {% extends "base.html" %}
 {% block head %}
 <style>
-    html, body {
-        border: 0;
-        padding: 0;
-        margin: 0;
-    }
-    html > * {
-        box-sizing: border-box;
-    }
     #main {
         display: flex;
         flex-flow: row wrap;
@@ -18,22 +10,36 @@
         margin: auto;
     }
     .project-link {
-        width: 250px;
-        height: 250px;
+        width: 25vw;
+        height: 25vw;
         overflow: hidden;
         display: block;
-        padding: 0.5em;
+        padding: 10px;
     }
 
     .project-image {
-        max-height: 250px;
+        max-height: 25vw;
+        filter: grayscale(100);
     }
+    .project-image:hover {
+        filter: none;
+    }
+    /* @media (max-width: 500px) {
+        .project-link {
+            width: 250px;
+            height: 250px;
+        }
+
+        .project-image {
+            max-height: 250px;
+        }
+    } */
 </style>
 {% endblock head %}
 {% block content %}
     {% for page in pages %}
         <a href="/page?name={{page.project.name}}" class="project-link">
-                <img src="{{page.project.name}}/img/{{page.project.images | first}}" alt="{{page.meta.title}}" class="project-image" />
+                <img src="{{page.project.name}}/img/{{page.project.images | first}}" alt="{{page.meta.title | escape}}" class="project-image" />
         </a>
     {% endfor %}
 {% endblock content %}

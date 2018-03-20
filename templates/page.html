@@ -1,4 +1,28 @@
 {% extends "base.html" %}
+{% block head %}
+<style>
+    .page-wrapper {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 100%;
+    }
+    article {
+        width: calc(40% - 10px);
+        margin: 0 5px;
+    }
+    aside {
+        display: flex;
+        flex-flow: column;
+        width: calc(60% - 10px);
+        margin: 0 5px;
+    }
+    aside > img {
+        max-width: 100%;
+    }
+</style>
+{% endblock head %}
 {% block content %}
 <div class="page-wrapper">
     <article>
