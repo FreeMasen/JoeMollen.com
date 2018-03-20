@@ -11,6 +11,7 @@ extern crate serde_derive;
 use hyper::server::{NewService, Http};
 
 mod routes;
+mod page;
 
 fn main() {
     let mut pb = pony::pony_builder::PonyBuilder::new();

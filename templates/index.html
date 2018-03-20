@@ -1,10 +1,39 @@
 {% extends "base.html" %}
+{% block head %}
+<style>
+    html, body {
+        border: 0;
+        padding: 0;
+        margin: 0;
+    }
+    html > * {
+        box-sizing: border-box;
+    }
+    #main {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: flex-start;
+        align-content: flex-start;
+        justify-content: center;
+        margin: auto;
+    }
+    .project-link {
+        width: 250px;
+        height: 250px;
+        overflow: hidden;
+        display: block;
+        padding: 0.5em;
+    }
+
+    .project-image {
+        max-height: 250px;
+    }
+</style>
+{% endblock head %}
 {% block content %}
-<div>
     {% for project in projects %}
-        <a href="/page?name={{project.name}}">
-            <img src="{{project.name}}/img/{{project.images[0]}}" alt="{{project.name}}" />
+        <a href="/page?name={{project.name}}" class="project-link">
+                <img src="{{project.name}}/img/{{project.images | first}}" alt="{{project.name}}" class="project-image" />
         </a>
     {% endfor %}
-</div>
 {% endblock content %}
