@@ -2,7 +2,7 @@ use std::path::{PathBuf};
 use std::fs::{read_dir, DirEntry, File};
 use std::io::Read;
 use toml::from_str;
-
+use md::md_to_html;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Meta {
@@ -85,7 +85,7 @@ pub fn get_page(name: &str) -> Option<Page> {
         Ok(mut f) => {
             let mut buf = String::new();
             ret.content = match f.read_to_string(&mut buf) {
-                Ok(_size) => buf.lines().map(|l| String::from("<p>") + &l + &String::from("</p>")).collect(),
+                Ok(_size) => md_to_html(&buf),
                 Err(e) => {
                     println!("Error reading content {:?}",e);
                     String::new()

@@ -8,12 +8,14 @@ extern crate serde;
 extern crate serde_derive;
 extern crate toml;
 extern crate percent_encoding;
+extern crate pulldown_cmark;
 
 
 use hyper::server::{NewService, Http};
 
 mod routes;
 mod page;
+mod md;
 
 fn main() {
     let mut pb = pony::pony_builder::PonyBuilder::new();
