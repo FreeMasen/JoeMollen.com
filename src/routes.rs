@@ -5,6 +5,7 @@ use hyper::header::ContentLength;
 use tera;
 use futures::future::Future;
 use page::{get_all_pages, get_page};
+use percent_encoding::percent_decode;
 
 pub fn index(_req: Request) -> Box<Future<Item = Response, Error = Error>> {
     let pages = if let Some(p) = get_all_pages() {
@@ -37,55 +38,6 @@ fn get_templates() -> tera::Tera {
     compile_templates!("templates/**/*")
 }
 
-// fn get_projects() -> Vec<Project> {
-//     let rd = if let Ok(r) = read_dir("portfolio") {
-//         r
-//     } else {
-//         return Vec::<Project>::new()
-//     };
-//     rd.map(from_path_to_project).collect()
-// }
-
-// fn from_path_to_project(de: Result<DirEntry, ::std::io::Error>) -> Project {
-//     let entry = if let Ok(e) = de {
-//         e
-//     } else {
-//         return Project {
-//             name: String::new(),
-//             images: vec!()
-//         }
-//     };
-//     let mut imgs_path = entry.path().clone();
-//     imgs_path.push("img");
-//     let name = from_path_to_string(Ok(entry));
-//     let mut images: Vec<String> = vec!();
-//     if let Ok(i_f) = read_dir(imgs_path) {
-//         for img in i_f {
-//             images.push(from_path_to_string(img))
-//         }
-//     };
-//     Project {
-//         name,
-//         images
-//     }
-// }
-
-// fn from_path_to_string(de: Result<DirEntry, ::std::io::Error>) -> String {
-//     let entry = if let Ok(e) = de {
-//         e
-//     } else {
-//         return String::new()
-//     };
-//     println!("entry: {:?}", entry);
-//     if let Ok(name) = entry.file_name().into_string() {
-//         println!("name: {:?}", name);
-//         name
-//     } else {
-//         String::new()
-//     }
-
-// }
-use percent_encoding::percent_decode;
 pub fn page(req: Request) -> Box<Future<Item = Response, Error = Error>> {
     match req.uri().query() {
         Some(q) => {
