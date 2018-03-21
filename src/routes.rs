@@ -8,15 +8,8 @@ use page::{get_all_pages, get_page};
 use percent_encoding::percent_decode;
 
 pub fn index(_req: Request) -> Box<Future<Item = Response, Error = Error>> {
-    let pages = if let Some(p) = get_all_pages() {
-        p
-    } else {
-        return bad_params()
-    };
-    let mut ctx = tera::Context::new();
-    ctx.add("pages", &pages);
-    match get_templates().render("index.html", &ctx) {
-        Ok(body) => {
+    match index_html() {
+        Some(body) => {
             Box::new(
                 ok(
                     Response::new()
@@ -26,13 +19,35 @@ pub fn index(_req: Request) -> Box<Future<Item = Response, Error = Error>> {
                 )
             )
         },
-        Err(e) => {
-            println!("template error {:?}", e);
-            bad_params()
+        None => {
+            Box::new(
+                ok(
+                    Response::new()
+                        .with_status(StatusCode::NotFound)
+                )
+            )
         }
     }
+}
 
-}   
+fn index_html() -> Option<String> {
+    match get_all_pages() {
+        Some(p) => {
+            let mut ctx = tera::Context::new();
+            ctx.add("pages", &p);
+            match get_templates().render("index.html", &ctx) {
+                Ok(body) => {
+                    Some(body)
+                },
+                Err(e) => {
+                    println!("Error rending html: {:?}", e);
+                    None
+                }
+            }
+        },
+        _ => None
+    }
+}
 
 fn get_templates() -> tera::Tera {
     compile_templates!("templates/**/*")
@@ -41,25 +56,16 @@ fn get_templates() -> tera::Tera {
 pub fn page(req: Request) -> Box<Future<Item = Response, Error = Error>> {
     match req.uri().query() {
         Some(q) => {
-            println!("q: {:?}", q);
             let parsed = match percent_decode(q.as_bytes()).decode_utf8() {
                 Ok(p) => p.into_owned(),
                 Err(_e) => String::new()
             };
             let parts: Vec<&str> = parsed.split("=").collect();
-            println!("parts: {:?}", parts);
             if parts.len() > 2 || parts[0] != "name" {
                 return bad_params()
             };
-            let page = if let Some(p) = get_page(parts[1]) {
-                p
-            } else {
-                return bad_params()
-            };
-            println!("page: {:?}", page);
-            let mut ctx = tera::Context::new();
-            ctx.add("page", &page);
-            let body = if let Ok(b) = get_templates().render("page.html", &ctx) {
+
+            let body = if let Some(b) = page_html(parts[1]) {
                 b
             } else {
                 return bad_params()
@@ -75,7 +81,23 @@ pub fn page(req: Request) -> Box<Future<Item = Response, Error = Error>> {
         },
         _ => bad_params()
     }
-    
+}
+
+fn page_html(name: &str) -> Option<String> {
+    match get_page(name) {
+        Some(p) => {
+            let mut ctx = tera::Context::new();
+            ctx.add("page", &p);
+            match get_templates().render("page.html", &ctx) {
+                Ok(html) => Some(html),
+                Err(e) => {
+                    println!("Error getting template html: {:?}", e);
+                    None
+                }
+            }
+        },
+        _ => None
+    }
 }
 
 fn bad_params() -> Box<Future<Item = Response, Error = Error>> {
