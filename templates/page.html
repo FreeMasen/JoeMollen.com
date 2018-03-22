@@ -21,17 +21,30 @@
     aside > img {
         max-width: 100%;
     }
+    h3 {
+        margin: 0;
+    }
+    .page-image + .page-image {
+        margin-top: 10px;
+    }
 </style>
 {% endblock head %}
 {% block content %}
 <div class="page-wrapper">
     <article>
         <h1>{{page.meta.title}}</h1>
+        <h2>{{page.meta.context}}</h2>
+        {% if page.meta.teammates | length > 0 %}
+            <h3>teammates</h3>
+            <span class="teammates">
+                {{ page.meta.teammates | join(sep=", ") }}
+            </span>
+        {% endif %}
         {{ page.content | safe }}
     </article>
     <aside>
         {% for img in page.project.images %}
-            <img src="{{page.project.name}}/img/{{img}}" alt="{{img}}" />
+            <img class="page-image" src="portfolio/{{page.project.name}}/img/{{img}}" alt="{{img}}" />
         {% endfor %}
     </aside>
 </div>

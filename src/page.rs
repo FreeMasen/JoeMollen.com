@@ -2,7 +2,7 @@ use std::path::{PathBuf};
 use std::fs::{read_dir, DirEntry, File};
 use std::io::Read;
 use toml::from_str;
-use md::md_to_html;
+use writer::md_to_html;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Meta {
@@ -55,7 +55,7 @@ impl Project {
 
 pub fn get_all_pages() -> Option<Vec<Page>> {
     let mut pages: Vec<Page> = vec!();
-    let path = PathBuf::from("portfolio");
+    let path = PathBuf::from("www/portfolio");
     if let Ok(rd) = read_dir(path) {
         for entry in rd {
             if let Ok(ent) = entry {
@@ -66,7 +66,6 @@ pub fn get_all_pages() -> Option<Vec<Page>> {
                 }
                 let name = name_for_entry(ent);
                 if let Some(p) = get_page(&name) {
-                    println!("Adding page: {:?}", &name);
                     pages.push(p);
                 }
             }
@@ -77,7 +76,7 @@ pub fn get_all_pages() -> Option<Vec<Page>> {
 
 pub fn get_page(name: &str) -> Option<Page> {
     
-    let mut path = PathBuf::from("portfolio");
+    let mut path = PathBuf::from("www/portfolio");
     let mut ret = Page::default();
     path.push(&name);
     path.push("content.md");
@@ -124,7 +123,7 @@ fn name_for_entry(entry: DirEntry) -> String {
 
 pub fn get_project(name: &str) -> Result<Project, String> {
     let mut images = Vec::<String>::new();
-    let mut path = PathBuf::from("portfolio");
+    let mut path = PathBuf::from("www/portfolio");
     path.push(&name);
     path.push("img");
     match read_dir(path) {
@@ -151,7 +150,7 @@ pub fn get_project(name: &str) -> Result<Project, String> {
 }
 
 pub fn get_meta(name: &str) -> Option<Meta> {
-    let mut path = PathBuf::from("portfolio");
+    let mut path = PathBuf::from("www/portfolio");
     path.push(&name);
     path.push("meta.toml");
     match File::open(path) {

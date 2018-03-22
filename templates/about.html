@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block head %}
+<style>
+    #about {
+        margin-left: 10px;
+    }
+    #about > span {
+        clear: left;
+    }
+    #joe {
+        float: left;
+        max-width: 50%;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock head %}
+{% block content %}
+<h1>About Me!</h1>
+<div id="about">
+    <img id="joe" src="joe.jpg" />
+    {{ content | safe }}
+</div>
+{% endblock content %}
