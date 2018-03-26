@@ -126,6 +126,7 @@ impl Writer {
     pub fn page_html(&self, page: &Page) -> Option<String> {
             let mut ctx = Context::new();
             ctx.add("page", page);
+            ctx.add("route", "portfolio");
             match self.tera.render("page.html", &ctx) {
                 Ok(html) => Some(html),
                 Err(e) => {
@@ -138,6 +139,7 @@ impl Writer {
     pub fn index_html(&self, pages: &Vec<Page>) -> Option<String> {
         let mut ctx = Context::new();
         ctx.add("pages", pages);
+        ctx.add("route", "index");
         match self.tera.render("index.html", &ctx) {
             Ok(body) => Some(body),
             Err(e) => {
@@ -149,6 +151,7 @@ impl Writer {
 
     pub fn about_html(&self) -> Option<String> {
         let mut ctx = Context::new();
+        ctx.add("route", "about");
         let mut content = String::new();
         match File::open(self.input().join("about.md")) {
             Ok(mut f) => {
@@ -172,7 +175,8 @@ impl Writer {
     }
 
     pub fn contact_html(&self) -> Option<String> {
-        let ctx = Context::new();
+        let mut ctx = Context::new();
+        ctx.add("route", "contact");
         match self.tera.render("contact.html", &ctx) {
             Ok(body) => Some(body),
             Err(e) => {

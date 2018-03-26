@@ -1,8 +1,6 @@
 <html>
     <head>
         <base href="/" /> 
-        {% block head %}
-        {% endblock head %}
         <style>
             @font-face {
                 font-family: 'Nanami-Book';
@@ -35,7 +33,7 @@
         #header > span {
             font-family: 'Nanami-Book', sans-serif;
             padding: 5px 0px;
-
+            font-weight: bold;
         }
         #nav {
             display: flex;
@@ -44,13 +42,20 @@
             align-items: center;
             align-content: flex-start;
         }
-        #nav > .button {
+        .button {
             display: block;
             padding: 5px 10px;
             text-decoration: none;
+            color: black;
+            background: none;
+            border: none;
         }
-        #nav > .button:hover {
+        .button:hover {
             color: rgb(0,147,239);
+        }
+        .button.selected {
+            font-family: 'Nanami-Book' sans-serif;
+            font-weight: bold;
         }
         @media (max-width: 550px) {
             #header {
@@ -63,6 +68,8 @@
             }
         }
         </style>
+        {% block head %}
+        {% endblock head %}
     </head>
     <body>
         <header id="header">
@@ -71,13 +78,31 @@
             </span>
             </svg>
             <nav id="nav">
-                <a class="button" href="/">
+                <a href="/"
+                {% if route == "portfolio" %}
+                    class="button selected"
+                {% else %}
+                    class="button"
+                {% endif %}
+                >
                     Portfolio
                 </a>
-                <a class="button" href="/about">
+                <a href="/about/index.html"
+                {% if route == "about" %}
+                    class="button selected"
+                {% else %}
+                    class="button"
+                {% endif %}
+                >
                     About
                 </a>
-                <a class="button" href="/contact">
+                <a href="/contact/index.html"
+                {% if route == "contact" %}
+                    class="button selected"
+                {% else %}
+                    class="button"
+                {% endif %}
+                >
                     Contact
                 </a>
             </nav>
