@@ -5,6 +5,14 @@
         {% block head %}
         {% endblock head %}
         <style>
+            @font-face {
+                font-family: 'Nanami-Book';
+                src: url('/fonts/Nanami-Book.otf')
+            }
+            @font-face {
+                font-family: 'Nanami-Thin';
+                src: url('/fonts/Nanami-Thin.otf')
+            }
         html, body {
             border: 0;
             padding: 0;
@@ -12,13 +20,23 @@
         }
         html > * {
             box-sizing: border-box;
-            font-family: 'IBM Plex Sans Condensed', sans-serif !important;
+            font-family: 'Nanami-Thin', sans-serif !important;
         }
         #header {
-            margin-bottom: 10px;
+            margin-top: 10px;
+            font-size: 18pt;
+            display: flex;
+            flex-flow: row;
+            justify-content: space-between;
+            align-items: center;
+            align-content: flex-start;
+            margin-left: 11vw;
+            margin-right: 11vw;
         }
-        #header > svg {
-            fill: gray;
+        #header > span {
+            font-family: 'Nanami-Book', sans-serif;
+            padding: 5px 0px;
+
         }
         #nav {
             display: flex;
@@ -26,41 +44,45 @@
             justify-content: center;
             align-items: center;
             align-content: flex-start;
-            margin-bottom: 10px;
         }
         #nav > .button {
             display: block;
             padding: 5px 10px;
             text-decoration: none;
-            color: black;
-            background: lightgrey;
-            font-size: 14pt;
-
         }
         #nav > .button:hover {
-            background: aqua;
+            color: rgb(0,147,239);
+        }
+        @media (max-width: 550px) {
+            #header {
+                font-size: 14pt;
+            }
+        }
+        @media (max-width: 375px) {
+            #header {
+                font-size: 12pt;
+            }
         }
         </style>
     </head>
     <body>
         <header id="header">
-            <svg viewBox="0 0 100 13">
-                <text x="0" y="12" lengthAdjust="spacingAndGlyphs" text-anchor="start" textLength="100">
-                    Joe Mollen
-                </text>
+            <span>
+                Joe Mollen
+            </span>
             </svg>
+            <nav id="nav">
+                <a class="button" href="/">
+                    Portfolio
+                </a>
+                <a class="button" href="/about">
+                    About
+                </a>
+                <a class="button" href="/contact">
+                    Contact
+                </a>
+            </nav>
         </header>
-        <nav id="nav">
-            <a class="button" href="/">
-                Portfolio
-            </a>
-            <a class="button" href="/about">
-                About
-            </a>
-            <a class="button" href="/contact">
-                Contact
-            </a>
-        </nav>
         <main id="main">
             {% block content %}
             {% endblock content %}
