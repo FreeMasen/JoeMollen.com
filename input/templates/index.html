@@ -24,16 +24,14 @@
     .project-image:hover {
         filter: none;
     }
-    #twenty-seventeen-st-paul-prize-competition > img:hover {
+    #twozerooneseven-st-paul-prize-competition > img:hover {
         filter: sepia(1) hue-rotate(165deg);
-        /*38, 24.5%, 60%*/
-        /*203° 100% 47%*/
     }
 </style>
 {% endblock head %}
 {% block content %}
     {% for page in pages %}
-        <a id="{{page.project.name | replace(from=" ", to="-") | convert_numeric | lower}}" href="/page?name={{page.project.name}}" class="project-link">
+        <a id="{{page.project.name | replace(from=" ", to="-") | convert_numeric | lower}}" href="/portfolio/{{page.project.name}}/index.html" class="project-link">
                 <img src="portfolio/{{page.project.name}}/img/{{page.project.images | first}}" alt="{{page.meta.title | escape}}" class="project-image" />
         </a>
     {% endfor %}

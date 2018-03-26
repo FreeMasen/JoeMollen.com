@@ -1,49 +1,67 @@
-extern crate hyper;
-extern crate futures;
+
 #[macro_use]
 extern crate tera;
-extern crate pony;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate toml;
 extern crate percent_encoding;
 extern crate pulldown_cmark;
+extern crate clap;
 
-use std::env::args;
-use std::path::PathBuf;
-use hyper::server::{NewService, Http};
-
-mod routes;
+use clap::{App, Arg, SubCommand};
 mod page;
 mod writer;
 
 fn main() {
-    let mut args: Vec<String> = args().collect();
-    if args.len() > 1 && &args[1] == "static" {
-        let path = args.pop().expect("Unable to get path");
-        write(path);
+    let matches = App::new("JoeMollen.com Generator")
+        .author("Robert Masen <r.f.masen@gmail.com>")
+        .about("Generates the static html for JoeMollen.com")
+        .arg(Arg::with_name("input")
+            .takes_value(true)
+            .short("i")
+            .help("The path to the input folder, default: ./input"))
+        .arg(Arg::with_name("output")
+            .takes_value(true)
+            .short("o")
+            .help("the path where the files should be written, default: ./www"))
+        .subcommand(SubCommand::with_name("layout").about("Display the required input layout tree"))
+        .get_matches();
+    if let Some(_sub) = matches.subcommand_matches("layout") {
+        print_layout();
     } else {
-        serve();
+        let input = matches.value_of("input").unwrap_or("input");
+        let output = matches.value_of("output").unwrap_or("www");
+        println!("writing files from {:?} to {:?}", input, output);
+        let w = ::writer::Writer::new(String::from(input), String::from(output));
+        w.write();
     }
 }
 
-fn write(path: String) {
-    println!("writing to {:?}", &path);
-    writer::write(PathBuf::from(&path));
-}
-
-fn serve() {
-    let mut pb = pony::pony_builder::PonyBuilder::new();
-    pb.get("/", routes::index);
-    pb.get("/page", routes::page);
-    pb.get("/about", routes::about);
-    pb.get("/contact", routes::contact);
-    pb.post("/message", routes::message);
-    pb.use_static("www/");
-    pb.use_static_logging();
-    pb.add_known_extension(&["otf"]);
-    let addr = "127.0.0.1:9990".parse().unwrap();
-    let handler = Http::new().bind(&addr, move || pb.new_service()).unwrap();
-    let _ = handler.run();
+fn print_layout() {
+    println!("input");
+    println!("----------");
+    println!("/");
+    println!("├─ portfolio");
+    println!("│     └─ [project name] (repeated)");
+    println!("│           ├─ img ");
+    println!("│           │   └─ [image position].[image ext] (repeated)");
+    println!("│           ├─ content.md");
+    println!("│           └─ meta.toml");
+    println!("├─ about.md");
+    println!("└─ joe.jpg [image file]");
+    println!("");
+    println!("output");
+    println!("----------");
+    println!("/");
+    println!("├─ portfolio");
+    println!("│     └─ [project name] (repeated)");
+    println!("│           ├─ img ");
+    println!("│           │   └─ [image position].[image ext] (repeated)");
+    println!("│           ├─ index.html");
+    println!("├─ about");
+    println!("│     └─index.html");
+    println!("├─ contact");
+    println!("│     └─index.html");
+    println!("└─ index.html");
 }
