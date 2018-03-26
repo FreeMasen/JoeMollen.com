@@ -42,6 +42,7 @@ fn serve() {
     pb.post("/message", routes::message);
     pb.use_static("www/");
     pb.use_static_logging();
+    pb.add_known_extension(&["otf"]);
     let addr = "127.0.0.1:9990".parse().unwrap();
     let handler = Http::new().bind(&addr, move || pb.new_service()).unwrap();
     let _ = handler.run();
