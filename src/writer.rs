@@ -2,7 +2,8 @@ use std::io::{Write, Read};
 use std::fs::{File, DirBuilder};
 use std::path::PathBuf;
 use page::{get_all_pages, Page};
-use tera;
+use tera::{Tera, Value, Result, Context};
+use std::collections::HashMap;
 
 use pulldown_cmark::html::push_html;
 use pulldown_cmark::Parser;
@@ -35,7 +36,7 @@ pub fn write(path: PathBuf) {
 }
 
 pub fn page_html(page: &Page) -> Option<String> {
-        let mut ctx = tera::Context::new();
+        let mut ctx = Context::new();
         ctx.add("page", page);
         match get_templates().render("page.html", &ctx) {
             Ok(html) => Some(html),
@@ -47,7 +48,7 @@ pub fn page_html(page: &Page) -> Option<String> {
 }
 
 pub fn index_html(pages: &Vec<Page>) -> Option<String> {
-    let mut ctx = tera::Context::new();
+    let mut ctx = Context::new();
     ctx.add("pages", pages);
     match get_templates().render("index.html", &ctx) {
         Ok(body) => Some(body),
@@ -59,7 +60,7 @@ pub fn index_html(pages: &Vec<Page>) -> Option<String> {
 }
 
 pub fn about_html() -> Option<String> {
-    let mut ctx = tera::Context::new();
+    let mut ctx = Context::new();
     let mut content = String::new();
     match File::open("www/about.md") {
         Ok(mut f) => {
@@ -83,7 +84,7 @@ pub fn about_html() -> Option<String> {
 }
 
 pub fn contact_html() -> Option<String> {
-    let ctx = tera::Context::new();
+    let ctx = Context::new();
     match get_templates().render("contact.html", &ctx) {
         Ok(body) => Some(body),
         Err(e) => {
@@ -93,8 +94,40 @@ pub fn contact_html() -> Option<String> {
     }
 }
 
-fn get_templates() -> tera::Tera {
-    compile_templates!("templates/**/*")
+fn get_templates() -> Tera {
+    let mut t = compile_templates!("templates/**/*");
+    t.register_filter("convert_numeric", convert_numeric);
+    t
+}
+
+fn convert_numeric(value: Value, _: HashMap<String, Value>) -> Result<Value> {
+    println!("convert_numeric {:?}", value);
+    match value {
+        Value::String(mut text) => {
+            println!("text: {:?}", text);
+            let numbers = numbers();
+            for (n, t) in numbers {
+                text = text.replace(n, &t);
+            }
+            Ok(Value::String(text))
+        },
+        _ => Ok(value)
+    }
+}
+
+fn numbers() -> HashMap<char, String> {
+    let mut ret = HashMap::new();
+    ret.insert('0', String::from("zero"));
+    ret.insert('1', String::from("one"));
+    ret.insert('2', String::from("two"));
+    ret.insert('3', String::from("three"));
+    ret.insert('4', String::from("four"));
+    ret.insert('5', String::from("five"));
+    ret.insert('6', String::from("six"));
+    ret.insert('7', String::from("seven"));
+    ret.insert('8', String::from("eight"));
+    ret.insert('9', String::from("nine"));
+    ret
 }
 
 pub fn md_to_html(html: &str) -> String {
