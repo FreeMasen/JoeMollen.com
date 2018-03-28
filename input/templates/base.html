@@ -17,7 +17,11 @@
         }
         html > * {
             box-sizing: border-box;
+            font-family: 'Nanami-Thin', sans-serif;
+        }
+        input, textarea {
             font-family: 'Nanami-Thin', sans-serif !important;
+            font-size: 14pt;
         }
         #header {
             margin-top: 10px;
@@ -49,13 +53,17 @@
             color: black;
             background: none;
             border: none;
+            font-family: 'Nanami-Thin', sans-serif;
         }
-        .button:hover {
+        .button:visited {
+            color: black;
+        }
+        .button:hover,
+        .button.selected {
             color: rgb(0,147,239);
         }
-        .button.selected {
-            font-family: 'Nanami-Book' sans-serif;
-            font-weight: bold;
+        .button.selected:hover {
+            color: black;
         }
         @media (max-width: 550px) {
             #header {
