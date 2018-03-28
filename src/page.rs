@@ -134,7 +134,7 @@ pub fn get_project(path: &PathBuf) -> Result<Project, String> {
         },
         Err(e) => println!("Error reading images: {:?}", e)
     };
-
+    images.sort();
     match path.file_name() {
         Some(os_str) => {
             match os_str.to_str() {

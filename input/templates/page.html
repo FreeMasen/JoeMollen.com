@@ -60,7 +60,7 @@
         {{ page.content | safe }}
     </article>
     <aside>
-        {% for img in page.project.images %}
+        {% for img in page.project.images | sort %}
             <img class="page-image" src="portfolio/{{page.project.name}}/img/{{img}}" alt="{{img}}" />
         {% endfor %}
     </aside>

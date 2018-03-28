@@ -32,7 +32,7 @@
 {% block content %}
     {% for page in pages %}
         <a id="{{page.project.name | replace(from=" ", to="-") | convert_numeric | lower}}" href="/portfolio/{{page.project.name}}/index.html" class="project-link">
-                <img src="portfolio/{{page.project.name}}/img/{{page.project.images | first}}" alt="{{page.meta.title | escape}}" class="project-image" />
+                <img src="portfolio/{{page.project.name}}/img/{{page.project.images | sort | first}}" alt="{{page.meta.title | escape}}" class="project-image" />
         </a>
     {% endfor %}
 {% endblock content %}
