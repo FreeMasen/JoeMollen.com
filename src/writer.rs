@@ -1,5 +1,5 @@
 use std::io::{Write, Read};
-use std::fs::{File, DirBuilder, copy};
+use std::fs::{File, DirBuilder, copy, read_dir};
 use std::ops::Add;
 use std::path::PathBuf;
 use page::{get_all_pages, Page};
@@ -17,7 +17,6 @@ pub struct Writer {
 impl Writer {
     pub fn new(input: String, output: String) -> Writer {
         let input_path = input.clone().add("/templates/**/*");
-        println!("creating new Writer \ninput:{:?}\noutput: {:?}\ntemplates: {:?}", &input, &output, &input_path);
         let mut tera = compile_templates!(&input_path);
         tera.register_filter("convert_numeric", Self::convert_numeric);
         Writer {
@@ -100,6 +99,7 @@ impl Writer {
                 println!("creatig img folder for {}", &page.project.name);
                 db.create(&out_img).expect(&format!("unable to create img forlder{:?}", &out_img));
             }
+            println!("moving images for {:?}", &page.project.name);
             for img in page.project.images {
                 let in_path = in_img.join(&img);
                 let out_path = out_img.join(&img);
@@ -113,14 +113,27 @@ impl Writer {
     }
 
     fn copy_fonts(&self) {
-        println!("copying fonts folder");
         let in_fonts = self.input().join("fonts");
         let out_fonts = self.output().join("fonts");
         if !out_fonts.exists() {
+            println!("creating output fonts folder");
             let db = DirBuilder::new();
             let _ = db.create(&out_fonts);
         }
-        let _ = copy(in_fonts, out_fonts);
+        if let Ok(rd) = read_dir(&in_fonts) {
+            for entry in rd {
+                if let Ok(ent) = entry {
+                    let from = &ent.path();
+                    let name = &ent.file_name();
+                    let to = out_fonts.join(&name);
+                    println!("Copying font {:?}", &name);
+                    if let Err(e) = copy(from, to) {
+                        println!("failed to copy {:?}\n{:?}", &name, e);
+                    }
+                }
+            }
+        }
+
     }
 
     pub fn page_html(&self, page: &Page) -> Option<String> {
@@ -189,7 +202,6 @@ impl Writer {
     fn convert_numeric(value: Value, _: HashMap<String, Value>) -> Result<Value> {
         match value {
             Value::String(mut text) => {
-                println!("text: {:?}", text);
                 let numbers = Self::numbers();
                 for (n, t) in numbers {
                     text = text.replace(n, &t);
