@@ -2,7 +2,7 @@ use std::path::{PathBuf};
 use std::fs::{read_dir, DirEntry, File};
 use std::io::Read;
 use toml::from_str;
-use writer::md_to_html;
+use writer::Writer;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Meta {
@@ -53,10 +53,10 @@ impl Project {
     }
 }
 
-pub fn get_all_pages() -> Option<Vec<Page>> {
+pub fn get_all_pages(base_path: &PathBuf) -> Option<Vec<Page>> {
+    let path = base_path.join("portfolio");
     let mut pages: Vec<Page> = vec!();
-    let path = PathBuf::from("www/portfolio");
-    if let Ok(rd) = read_dir(path) {
+    if let Ok(rd) = read_dir(&path) {
         for entry in rd {
             if let Ok(ent) = entry {
                 if let Ok(md) = ent.metadata() {
@@ -65,7 +65,8 @@ pub fn get_all_pages() -> Option<Vec<Page>> {
                     }
                 }
                 let name = name_for_entry(ent);
-                if let Some(p) = get_page(&name) {
+                let page_path = &path.join(name);
+                if let Some(p) = get_page(&page_path) {
                     pages.push(p);
                 }
             }
@@ -74,30 +75,26 @@ pub fn get_all_pages() -> Option<Vec<Page>> {
     Some(pages)
 }
 
-pub fn get_page(name: &str) -> Option<Page> {
-    
-    let mut path = PathBuf::from("www/portfolio");
+pub fn get_page(path: &PathBuf) -> Option<Page> {
     let mut ret = Page::default();
-    path.push(&name);
-    path.push("content.md");
-    match File::open(&path) {
+    match File::open(&path.join("content.md")) {
         Ok(mut f) => {
             let mut buf = String::new();
             ret.content = match f.read_to_string(&mut buf) {
-                Ok(_size) => md_to_html(&buf),
+                Ok(_size) => Writer::md_to_html(&buf),
                 Err(e) => {
                     println!("Error reading content {:?}",e);
                     String::new()
                 }
             };
-            ret.project = match get_project(name) {
+            ret.project = match get_project(&path) {
                 Ok(p) => p,
                 Err(e) => {
                     println!("Error getting project {:?}", e);
                     Project::default()
                 }
             };
-            ret.meta = match get_meta(name) {
+            ret.meta = match get_meta(&path) {
                 Some(meta) => meta,
                 None => {
                     println!("Unable to get meta");
@@ -121,12 +118,9 @@ fn name_for_entry(entry: DirEntry) -> String {
     }
 }
 
-pub fn get_project(name: &str) -> Result<Project, String> {
+pub fn get_project(path: &PathBuf) -> Result<Project, String> {
     let mut images = Vec::<String>::new();
-    let mut path = PathBuf::from("www/portfolio");
-    path.push(&name);
-    path.push("img");
-    match read_dir(path) {
+    match read_dir(path.join("img")) {
         Ok(rd) => {
             for entry in rd {
                 if let Ok(ent) = entry {
@@ -140,20 +134,25 @@ pub fn get_project(name: &str) -> Result<Project, String> {
         },
         Err(e) => println!("Error reading images: {:?}", e)
     };
-    if images.len() < 1 {
-        images.push(String::from("empty.jpg"));
+    images.sort();
+    match path.file_name() {
+        Some(os_str) => {
+            match os_str.to_str() {
+                Some(name) => {
+                    Ok(Project {
+                        name: String::from(name),
+                        images
+                    })
+                },
+                None => Err(String::from("unable to convert from os string to string"))
+            }
+        },
+        None => Err(String::from("unable to get filename"))
     }
-    Ok(Project {
-        name: String::from(name),
-        images,
-    })
 }
 
-pub fn get_meta(name: &str) -> Option<Meta> {
-    let mut path = PathBuf::from("www/portfolio");
-    path.push(&name);
-    path.push("meta.toml");
-    match File::open(path) {
+pub fn get_meta(path: &PathBuf) -> Option<Meta> {
+    match File::open(path.join("meta.toml")) {
         Ok(mut f) => {
             let mut buf = String::new();
             match f.read_to_string(&mut buf) {
@@ -173,7 +172,7 @@ pub fn get_meta(name: &str) -> Option<Meta> {
             }
         },
         Err(e) => {
-            println!("Error opening meta.toml {:?} for {:?}", e, &name);
+            println!("Error opening meta.toml {:?} for {:?}", e, &path);
             None
         }
     }

@@ -1,9 +1,6 @@
 <html>
     <head>
-        <base href="/" />
-        <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet"> 
-        {% block head %}
-        {% endblock head %}
+        <base href="/" /> 
         <style>
             @font-face {
                 font-family: 'Nanami-Book';
@@ -20,7 +17,11 @@
         }
         html > * {
             box-sizing: border-box;
+            font-family: 'Nanami-Thin', sans-serif;
+        }
+        input, textarea {
             font-family: 'Nanami-Thin', sans-serif !important;
+            font-size: 14pt;
         }
         #header {
             margin-top: 10px;
@@ -33,10 +34,15 @@
             margin-left: 11vw;
             margin-right: 11vw;
         }
-        #header > span {
+        #header > a {
             font-family: 'Nanami-Book', sans-serif;
             padding: 5px 0px;
-
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+        }
+        #header > a:visited {
+            color: black;
         }
         #nav {
             display: flex;
@@ -45,13 +51,24 @@
             align-items: center;
             align-content: flex-start;
         }
-        #nav > .button {
+        .button {
             display: block;
             padding: 5px 10px;
             text-decoration: none;
+            color: black;
+            background: none;
+            border: none;
+            font-family: 'Nanami-Thin', sans-serif;
         }
-        #nav > .button:hover {
+        .button:visited {
+            color: black;
+        }
+        .button:hover,
+        .button.selected {
             color: rgb(0,147,239);
+        }
+        .button.selected:hover {
+            color: black;
         }
         @media (max-width: 550px) {
             #header {
@@ -64,21 +81,41 @@
             }
         }
         </style>
+        {% block head %}
+        {% endblock head %}
     </head>
     <body>
         <header id="header">
-            <span>
+            <a href="/">
                 Joe Mollen
-            </span>
+            </a>
             </svg>
             <nav id="nav">
-                <a class="button" href="/">
-                    Portfolio
+                <a href="/"
+                {% if route == "portfolio" %}
+                    class="button selected"
+                {% else %}
+                    class="button"
+                {% endif %}
+                >
+                    Work
                 </a>
-                <a class="button" href="/about">
+                <a href="/about/index.html"
+                {% if route == "about" %}
+                    class="button selected"
+                {% else %}
+                    class="button"
+                {% endif %}
+                >
                     About
                 </a>
-                <a class="button" href="/contact">
+                <a href="/contact/index.html"
+                {% if route == "contact" %}
+                    class="button selected"
+                {% else %}
+                    class="button"
+                {% endif %}
+                >
                     Contact
                 </a>
             </nav>

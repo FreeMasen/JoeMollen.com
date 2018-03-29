@@ -2,12 +2,13 @@
 {% block head %}
 <style>
     #contact {
-        max-width: 250px;
+        max-width: 350px;
         margin: 10px auto;
     }
     .input-group {
         display: flex;
         flex-flow: column;
+        margin-top: 10px;
     }
     .button-group {
         display: flex;
@@ -15,6 +16,10 @@
         justify-content: space-between;
         align-items: center;
         margin-top: 10px;
+    }
+    .button-group > .button {
+        cursor: pointer;
+        font-size: 14pt;
     }
     #message {
         resize: none;

@@ -2,5 +2,8 @@
 **/target/
 **/*.rs.bk
 .DS_Store
-portfolio/
-www/fonts/
+**/portfolio/
+**/fonts/
+www/
+input/about.md
+input/joe.jpg
