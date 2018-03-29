@@ -18,3 +18,4 @@ deploy:
     repo: FreeMasen/JoeMollen.com
     tags: true
     branch: master
+  skip_cleanup: true
