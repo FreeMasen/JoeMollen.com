@@ -10,14 +10,18 @@ script:
 notifications:
   - email: false
 before_deploy:
-  - echo "moving file to root and renaming $CRATE_NAME-$TRAVIS_TAG"
-  - ls
-  - cp target/release/jm .
+  - echo "building deploy package"
+  - echo $CRATE_NAME
+  - echo $TRAVIS_TAG
+  - mkdir jm
+  - cp target/release/jm jm/build_site
+  - cp -r input jm/
+  - tar -cvjf jm.tar jm
 deploy:
   provider: releases
   api_key:
     secure: CwZCkNhNsozx3v1EIuAp0btIKAxNlSJVe0o8KwwIoexU4VS01gcSiaGu13CQsPTrOnNR9pRU21ykS8YMsse8GA+GIgPhhTjCR4FnRHXm2qbYprjJaqwoZVFGFnhvePVEe0Kfl9LM2JORkQglurlzYbwjEL7AF0FZu9xqjOrqmDjzhW0b1r7TWdStcDwVrHKcEAegJyuteroio6deuIEeGBGiEX2+wVPs7mRIQUd52zrYeEZY/UaYnIYVoxX3y7/P3IT8z6J8cmBACu8QaPHNq8mlqVcVsA8byIGt9LO4fhimpLouhul8mQryEFhBJ+3umedmpZhKwLtTv5/PfYmJruYqnIaEmJ4R6PfGnGHaAMpXtEr+e6o06Iryje/szozeRFhY8xkcRKq5KQ3AUHhP4pqA914WiCO5nyk7WHsUy/BQkT+cwDIPduz2J0m2P3+R5tdmJQuNyOvPHeAsFeay2x4a1F9S/LlyANwvYVKvoqmkOYywdIasbRfEpa46kCcsmlWcmKbj71P1Oinxz1viUWgwHLXwPrYny69nyPYUzN3eZwwHlft4it9t/dysHJFwtCg+eaUX3kZbf5JuPKza/TdVgarHDn2dZFEO6TYxkM1z1XYyD/4bDDJuriMwj+Z9vQDwrhb9Ecz0wKo8gcF+VkV96C+qwrSFnm1PTsGpkoo=
-  file: jm
+  file: jm.tar
   on:
     repo: FreeMasen/JoeMollen.com
     tags: true
