@@ -62,7 +62,21 @@ This file will act as the image placed on the about page.
 
 ## Using the program
 
-Now that you have your folder setup, you should be able to just double click the `jm` file and the site will generate into a folder titled `www`. Once you have your hosting provider setup, you can upload this folder according to their directions.
+One quick way to get a bunch of this out of the way would be to use the program `build_site` in the folder. You first want to open the app `terminal`. You this will open with your current directory set to your main user folder (this is the parent folder to Documents). You want to move into the folder that was generated when you unzipped the download, you can do that by typing the following.
+
+```bash
+$ cd Downloads/jm
+```
+*assuming that it ended up in your downloads folder, it may be in `Desktop` or `Documents`.
+
+Once there you can type `build_site`, this will give you a nice help message with some directions. There are 5 different options you have.
+
+1. `setup` - This will setup all of the directories for you, even creating a sample project folder.
+2. `build` - This will actually build your site, by default it looks for the folder `input` and outputs the whole site to `www`.
+3. `add` - This will create a new project folder with the required files.
+4. `layout` - This will print out both the input and output directory structures.
+5. `help` - this will print the same message as just typing build_site.
+
 
 ## output
 The output folder will be structed like this.
