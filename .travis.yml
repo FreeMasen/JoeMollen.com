@@ -1,11 +1,14 @@
 language: rust
 rust:
-- stable
+  - stable
+cache: cargo
 os:
-- linux
-- osx
+  - osx
+script:
+  - cargo build --release
+  - cargo test
 notifications:
-- email: false
+  - email: false
 deploy:
   provider: releases
   api_key:
