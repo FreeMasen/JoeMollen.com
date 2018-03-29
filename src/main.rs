@@ -45,7 +45,7 @@ fn print_layout() {
     println!("├─ portfolio");
     println!("│     └─ [project name] (repeated)");
     println!("│           ├─ img ");
-    println!("│           │   └─ [image position].[image ext] (repeated)");
+    println!("│           │   └─ [image] (repeated)");
     println!("│           ├─ content.md");
     println!("│           └─ meta.toml");
     println!("├─ about.md");
@@ -57,7 +57,7 @@ fn print_layout() {
     println!("├─ portfolio");
     println!("│     └─ [project name] (repeated)");
     println!("│           ├─ img ");
-    println!("│           │   └─ [image position].[image ext] (repeated)");
+    println!("│           │   └─ [image] (repeated)");
     println!("│           ├─ index.html");
     println!("├─ about");
     println!("│     └─index.html");
