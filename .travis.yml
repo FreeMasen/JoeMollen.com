@@ -13,4 +13,5 @@ deploy:
   file: target/x86_64-apple-darwin/release/jm
   on:
     repo: FreeMasen/JoeMollen.com
-    branch: static_only
+    tags: true
+    branch: master
