@@ -9,15 +9,21 @@ extern crate percent_encoding;
 extern crate pulldown_cmark;
 extern crate clap;
 
-use std::io::{Write};
+use std::io::{Write, stdin};
 use std::fs::{File, DirBuilder, read_dir};
 use std::path::PathBuf;
+
+use std::env::args;
+
 
 use clap::{App, Arg, SubCommand};
 mod page;
 mod writer;
 
 fn main() {
+    for (i, arg) in args().enumerate() {
+        println!("arg {}: {:?}", i, arg);
+    }
     let app =  App::new("JoeMollen.com Generator")
         .author("Robert Masen <r.f.masen@gmail.com>")
         .about("Generates the static html for JoeMollen.com")
@@ -60,8 +66,11 @@ fn main() {
                     .takes_value(true)
                     .short("i")
                     .help("The path to the input folder, default: ./input"))
+        )
+        .subcommand(
+            SubCommand::with_name("interactive")
+                .about("Interactively perform any SUBCOMMAND")
         );
-        let mut help = app.clone();
         let matches = app.get_matches();
     if let Some(_matches) = matches.subcommand_matches("layout") {
         print_layout();
@@ -75,11 +84,17 @@ fn main() {
         let input = matches.value_of("input").unwrap_or("input");
         let output = matches.value_of("output").unwrap_or("www");
         println!("writing files from {:?} to {:?}", input, output);
+        write_site(input, output);
+    } if let Some(_matches) = matches.subcommand_matches("interactive") {
+        dynamic();
+    }else {
+        println!("{}", matches.usage());
+    }
+}
+
+fn write_site(input: &str, output: &str) {
         let w = ::writer::Writer::new(String::from(input), String::from(output));
         w.write();
-    } else {
-        let _ = help.print_help();
-    }
 }
 
 fn print_layout() {
@@ -162,4 +177,74 @@ fn setup_input(input: &str) {
         println!("Unable to create about.md file in {:?}\n{:?}", &about_path, e);
     }
     new_project(input);
+}
+
+fn dynamic() {
+    println!("JoeMollen.Com Site Builder");
+    print_options();
+    loop {
+        let mut input = String::new();
+        if let Ok(_size) = stdin().read_line(&mut input) {
+            let trimmed = input.trim();
+            if "setup" == trimmed || "1" == trimmed {
+                let path = get_input_folder();
+                setup_input(&path)
+            }
+            else if "add" == trimmed || "2" == trimmed {
+                let path = get_input_folder();
+                new_project(&path);
+            }
+            else if "build" == trimmed || "3" == trimmed {
+                let input = get_input_folder();
+                let output = get_output_folder();
+                write_site(&input, &output)
+            }
+            else if "layout" == trimmed || "4" == trimmed {
+                print_layout();
+            } else {
+                println!("Sorry, I didn't get that.");
+                print_options();
+            }
+        }
+    }
+}
+
+fn print_options() {
+    println!("What are you looking to do?");
+    println!("Your options are");
+    println!("----------");
+    println!("1. setup - setup the basic folder structure");
+    println!("2. add - add a new empty project to your portfolio");
+    println!("3. build - build the site");
+    println!("4. layout - see the folder layout");
+}
+
+fn get_input_folder() -> String {
+    println!("Where is your input folder? [./input]");
+    loop {
+        let mut input = String::new();
+        if let Ok(_) = stdin().read_line(&mut input) {
+            let trimmed = input.trim();
+            if trimmed == "" {
+                return String::from("input");
+            } else {
+                return String::from(trimmed);
+            }
+        }
+    }
+}
+
+fn get_output_folder() -> String {
+    println!("Where is your output folder? [./www]");
+    loop {
+        let mut input = String::new();
+        if let Ok(_) = stdin().read_line(&mut input) {
+            let trimmed = input.trim();
+            if trimmed == "" {
+                return String::from("www");
+            } else {
+                return String::from(trimmed);
+            }
+        }
+    }
 }
