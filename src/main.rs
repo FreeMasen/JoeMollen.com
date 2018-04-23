@@ -13,17 +13,11 @@ use std::io::{Write, stdin};
 use std::fs::{File, DirBuilder, read_dir};
 use std::path::PathBuf;
 
-use std::env::args;
-
-
 use clap::{App, Arg, SubCommand};
 mod page;
 mod writer;
 
 fn main() {
-    for (i, arg) in args().enumerate() {
-        println!("arg {}: {:?}", i, arg);
-    }
     let app =  App::new("JoeMollen.com Generator")
         .author("Robert Masen <r.f.masen@gmail.com>")
         .about("Generates the static html for JoeMollen.com")

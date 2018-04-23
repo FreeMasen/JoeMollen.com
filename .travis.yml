@@ -13,12 +13,13 @@ before_deploy:
   - mkdir jm
   - cp target/release/jm jm/builder
   - cp -r input jm/
+  - echo "PREFIX=\"\$(dirname \"\$BASH_SOURCE\")\"" >> jm/build_site
   - echo "CMD=interactive" >> jm/build_site
   - echo "if ! [ -z \"$1\" ]" >> jm/build_site
   - echo "then" >> jm/build_site
   - echo "    CMD=\$1" >> jm/build_site
   - echo "fi" >> jm/build_site
-  - echo "\$(pwd)/builder \$CMD" >> jm/build_site
+  - echo "\$PREFIX/builder \$CMD" >> jm/build_site
   - chmod a+x jm/build_site
   - tar -cvjf jm.tar.gz jm
 deploy:
