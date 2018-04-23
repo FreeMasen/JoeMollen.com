@@ -10,9 +10,6 @@ script:
 notifications:
   - email: false
 before_deploy:
-  - echo "building deploy package"
-  - echo $CRATE_NAME
-  - echo $TRAVIS_TAG
   - mkdir jm
   - cp target/release/jm jm/builder
   - cp -r input jm/
@@ -21,7 +18,7 @@ before_deploy:
   - echo "then" >> jm/build_site
   - echo "    CMD=\$1" >> jm/build_site
   - echo "fi" >> jm/build_site
-  - echo "builder \$CMD" >> jm/build_site
+  - echo "\$(pwd)/builder \$CMD" >> jm/build_site
   - chmod a+x jm/build_site
   - tar -cvjf jm.tar.gz jm
 deploy:
