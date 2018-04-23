@@ -22,6 +22,7 @@ before_deploy:
   - echo "    CMD=\$1" >> jm/build_site
   - echo "fi" >> jm/build_site
   - echo "builder \$CMD" >> jm/build_site
+  - chmod a+x jm/build_site
   - tar -cvjf jm.tar.gz jm
 deploy:
   provider: releases
